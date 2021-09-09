@@ -1,6 +1,6 @@
 # RM-Insta-Depo
 
-RM-Insta-Depo is a macro tool for Last Oasis that allows you to deposits your full inventory to selected output location or grab all Input or Output slots from crafting stations.
+RM-Insta-Depo is a macro tool for Last Oasis that allows you to deposit your full inventory to selected output location or grab all Input or Output slots from crafting stations.
 This tool was created using [AutoHotkey](https://www.autohotkey.com/). For source information, download the corresponding .ahk file.
 
 > Benefits
