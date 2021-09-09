@@ -17,6 +17,8 @@ Download and Run RM-Insta-Depo executable. Make sure to select the Display Resol
 - [Download for 2560x1440 Resolution](https://github.com/Arman519/RM-Insta-Depo/raw/main/RM-Insta-Depo_2560x1440.exe)
 - [Download for 3840x2160 Resolution](https://github.com/Arman519/RM-Insta-Depo/raw/main/RM-Insta-Depo_3840x2160.exe)
 
+![ttystudio GIF](http://g.recordit.co/Yyys4evPKJ.gif)
+
 ### F1
 Press F1 to insta depo your full inventory
 ![ttystudio GIF](http://g.recordit.co/kxAM6777P0.gif)
