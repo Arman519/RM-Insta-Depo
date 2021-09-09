@@ -18,8 +18,8 @@ Press F1 to insta depo your full inventory
 
 ### F2
 Press F2 to insta loot the Output slots of a crafting station
-![ttystudio GIF](http://g.recordit.co/wCKjPR4vxy.gif)
+![ttystudio GIF](http://g.recordit.co/Nj2zRRnlEY.gif)
 
 ### F3
 Press F3 to insta loot the Input slots of a crafting station
-![ttystudio GIF](http://g.recordit.co/m0IpnDPRhc.gif)
+![ttystudio GIF](http://g.recordit.co/74FQrEFXFQ.gif)
