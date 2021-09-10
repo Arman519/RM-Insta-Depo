@@ -31,3 +31,7 @@ Press F2 to insta loot the Output slots of a crafting station
 ### F3
 Press F3 to insta loot the Input slots of a crafting station
 ![ttystudio GIF](http://g.recordit.co/74FQrEFXFQ.gif)
+
+### Exit, Suspend Hotkeys, or Pause
+To exit or Suspend Hotkeys, right click on the mouse icon in the corner taskbar and select exit or suspend.
+![ttystudio GIF](http://g.recordit.co/NtB9M28sVv.gif)
