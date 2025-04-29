@@ -131,8 +131,10 @@ PerformAutoClick:
         CoordMode, Mouse, Screen  ; Use screen coordinates
         MouseGetPos, xpos, ypos   ; Get current mouse position
         
-        ; Send click directly without using Click command
-        SendEvent {Click %xpos%, %ypos%, Left}
+        ; Send click down, wait, and then send click up
+        SendEvent {Click Down %xpos%, %ypos%}
+        Sleep, 50
+        SendEvent {Click Up %xpos%, %ypos%}
     }
 return
 
