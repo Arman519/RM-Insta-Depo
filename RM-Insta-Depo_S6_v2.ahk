@@ -15,47 +15,42 @@ SetBatchLines -1
 global isGameActive := false
 global autoClickEnabled := false  ; Track auto-clicker state
 global currentResolution := "3840x2160"  ; Default resolution
-global mainGuiVisible := false
 
-; Initialize recipe database
-InitializeRecipes()
-
-; --- Main Window (hidden by default) ---
-Gui, +AlwaysOnTop +ToolWindow -Caption +HwndGui
-Gui, Color, 333333
-Gui, Show, w160 h200 Hide, RM Insta Depo ; Create window hidden, GuiHwnd is now set
-
-; Set WS_EX_LAYERED style to enable transparency and other effects
-DllCall("SetWindowLong", "UInt", GuiHwnd, "Int", -20, "UInt", DllCall("GetWindowLong", "UInt", GuiHwnd, "Int", -20) | 0x80000)
-
-; Round the corners of the window (15px radius) - Applied before transparency
-WinSet, Region, 0-0 w160 h200 r15-15, ahk_id %GuiHwnd%
-
-; Set transparency for the main window (150 out of 255 for more noticeable effect) - Applied after region
-WinSet, Transparent, 150, ahk_id %GuiHwnd%
-; Font, s10 bold, Segoe UI ; Reduced font size for title
+; Modern UI Configuration with rounded corners
+Gui, +AlwaysOnTop +ToolWindow -Caption +HwndGuiHwnd
+Gui, Color, 333333 ; Dark grey background
+Gui, Font, s14 bold, Segoe UI ; Increased font size for title
 
 ; Add a draggable bar at the top
-Gui, Add, Text, x0 y0 w180 h30 vDragBar BackgroundTrans, ; Draggable area
-Gui, Font, s10 norm, Segoe UI
-; Add title text - positioned at the top
-Gui, Add, Text, x20 y2 w200 h25 cWhite BackgroundTrans, RM Insta Depo
+Gui, Add, Text, x0 y0 w400 h50 vDragBar BackgroundTrans, ; Draggable area
 
-; Reset font to normal for other controls
-Gui, Font, s8 norm, Segoe UI ; Smaller font size for items
+; Add title text - positioned at the top
+Gui, Add, Text, x15 y0 w400 h50 cWhite BackgroundTrans, RM Insta Depo
+
+; Add a digital clock at the bottom middle - 12-HOUR FORMAT
+Gui, Font, s9 norm, Consolas  ; Monospace font works well for clocks
+
+; Show with reduced width
+Gui, Show, w400 h400, RM Insta Depo
+
+; Create rounded corners
+WinSet, Region, 0-0 w400 h400 r25-25, ahk_id %GuiHwnd%
+
+; Add transparency to the window
+WinSet, Transparent, 200, ahk_id %GuiHwnd%
 
 ; Replace buttons with static text
-Gui, Add, Text, x20 y20 w130 h22 cWhite BackgroundTrans, F1: Depo
-Gui, Add, Text, x20 y40 w130 h22 cWhite BackgroundTrans, F2: Loot Output
-Gui, Add, Text, x20 y60 w130 h22 cWhite BackgroundTrans, F3: Loot Input
-Gui, Add, Text, x20 y80 w130 h22 cWhite BackgroundTrans, F4: Recipe Search
-Gui, Add, Text, x20 y100 w130 h22 cWhite BackgroundTrans, F5: Select Res: Default 4k
-Gui, Add, Text, x20 y120 w130 h22 cWhite BackgroundTrans, F6: Auto Click (OFF)
-Gui, Add, Text, x20 y140 w200 h25 cWhite BackgroundTrans, F8: Show/Hide GUI
+Gui, Add, Text, x10 y30 w130 h22 cWhite BackgroundTrans, F1: Depo
+Gui, Add, Text, x10 y50 w130 h22 cWhite BackgroundTrans, F2: Loot Output
+Gui, Add, Text, x10 y70 w130 h22 cWhite BackgroundTrans, F3: Loot Input
+Gui, Add, Text, x10 y90 w130 h22 cWhite BackgroundTrans, F4: Recipe Search
+Gui, Add, Text, x10 y110 w130 h22 cWhite BackgroundTrans, F5: Select Res
+Gui, Add, Text, x10 y130 w130 h22 cWhite BackgroundTrans, F6: Auto Click (OFF)
+Gui, Add, Text, x10 y150 w200 h25 cWhite BackgroundTrans, F8: Show/Hide GUI
 
 ; Add digital clock at the top right - 12-HOUR FORMAT
 Gui, Font, s8 norm, Consolas  ; Smaller monospace font for clock
-Gui, Add, Text, x0 y165 w100 h25 Right vDigitalClock cWhite BackgroundTrans, 00:00:00 AM
+Gui, Add, Text, x0 y175 w100 h25 Right vDigitalClock cWhite BackgroundTrans, 00:00:00 AM
 
 ; Show with reduced width
 Gui, Show, w160 h200, RM Insta Depo
@@ -110,6 +105,9 @@ Menu, ContextMenu, Add, Exit, ExitScript
 
 ; Set up a timer to check if Last Oasis is active
 SetTimer, CheckGameActive, 1000
+
+; Initialize recipe database
+InitializeRecipes()
 
 Return
 
@@ -1565,6 +1563,7 @@ Return
 
 F4::
     IfWinActive, Recipe Search
+
     {
         Gosub, 4GuiClose
     }
@@ -2264,6 +2263,9 @@ Macro3:
         Click, 1441, 410 Left, Down
         Click, 1441, 410 Left, Up
         Click, 1528, 416 Left, Down
+        Click, 1528, 416 Left, Up
+        Click, 1441, 492 Left, Down
+        Click, 1441, 492 Left, Up
         Click, 1528, 416 Left, Up
         Click, 1441, 492 Left, Down
         Click, 1441, 492 Left, Up
