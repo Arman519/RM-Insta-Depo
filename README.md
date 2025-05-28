@@ -12,7 +12,7 @@ RM-Insta-Depo is a macro tool for Last Oasis, created with [AutoHotkey](https://
 - **Modern UI**: Digital clock, and context menu for quick access.
 
 ## Installation
-1. Download and run the RM-Insta-Depo executable.
+1. Download and run the [RM-Insta-Depo](https://github.com/Arman519/RM-Insta-Depo/blob/main/RM-Insta-Depo_S6v2.exe) executable.
 2. Select your display resolution in the app for best results.
 
 ## Hotkeys
