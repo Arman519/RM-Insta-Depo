@@ -3,35 +3,43 @@
 RM-Insta-Depo is a macro tool for Last Oasis that allows you to deposit your full inventory to selected output location or grab all Input or Output slots from crafting stations.
 This tool was created using [AutoHotkey](https://www.autohotkey.com/). For source information, download the corresponding .ahk file.
 
-> Benefits
+# RM-Insta-Depo
 
-- Less clicking
-- Faster depo
+RM-Insta-Depo is a macro tool for Last Oasis, created with [AutoHotkey](https://www.autohotkey.com/), that automates inventory management and crafting station interactions. It features a modern UI, recipe search, resolution selector, and auto-clicker.
 
-If you like this app please [Donate](https://www.paypal.me/rm519)
+## Features
+- **Insta Depo**: Deposit your full inventory to a selected output location with one keypress.
+- **Insta Loot Output**: Grab all Output slots from crafting stations instantly.
+- **Insta Loot Input**:  Grab all Input slots from crafting stations.
+- **Recipe Search**: Search for crafting recipes in-game with a searchable database.
+- **Resolution Selector**: Choose your screen resolution for accurate macro operation.
+- **Auto Clicker**: Toggle auto-clicking for repetitive tasks.
+- **Modern UI**: Digital clock, and context menu for quick access.
 
-### Installation:
-Download and Run RM-Insta-Depo executable. Make sure to select the Display Resolution related to your screen.
+## Installation
+1. Download and run the RM-Insta-Depo executable.
+2. Select your display resolution in the app for best results.
 
-- [Download for 1920x1080 Resolution](https://github.com/Arman519/RM-Insta-Depo/raw/main/RM-Insta-Depo_1920x1080_S5.exe)
-- [Download for 2560x1440 Resolution](https://github.com/Arman519/RM-Insta-Depo/raw/main/RM-Insta-Depo_2560x1440_S5.exe)
-- [Download for 3840x2160 Resolution](https://github.com/Arman519/RM-Insta-Depo/raw/main/RM-Insta-Depo_3840x2160_S5.exe)
+## Hotkeys
+- **F1**: Insta depo your full inventory (Shift+F1 for medium bag without last row)
+- **F2**: Insta loot Output slots of a crafting station
+- **F3**: Insta loot Input slots of a crafting station (if enabled)
+- **F4**: Open/close Recipe Search window
+- **F5**: Open Resolution Selector
+- **F6**: Toggle Auto Clicker
+- **F8**: Show/Hide main GUI
 
-![ttystudio GIF](http://g.recordit.co/Yyys4evPKJ.gif)
+## Context Menu
+Right-click the tray icon for:
+- Pause/Resume Hotkeys
+- Toggle Auto Click
+- Recipe Search
+- Change Resolution
+- Exit
 
-### F1
-Press F1 to insta depo your full inventory
-![ttystudio GIF](http://g.recordit.co/kxAM6777P0.gif)
-(optional Shift+F1 to depo Medium bag without last row)
+## Notes
+- The tool detects if Last Oasis is active and makes the window click-through for convenience.
+- The recipe search supports both exact and partial matches.
+- For source information, download the corresponding `.ahk` file.
 
-### F2
-Press F2 to insta loot the Output slots of a crafting station
-![ttystudio GIF](http://g.recordit.co/Nj2zRRnlEY.gif)
-
-### F3 [DISABLED in Season 5]
-Press F3 to insta loot the Input slots of a crafting station
-![ttystudio GIF](http://g.recordit.co/74FQrEFXFQ.gif)
-
-### Exit, Suspend Hotkeys, or Pause
-To exit or Suspend Hotkeys, right click on the mouse icon in the corner taskbar and select exit or suspend.
-![ttystudio GIF](http://g.recordit.co/NtB9M28sVv.gif)
+If you like this app, please consider [Donating](https://www.paypal.me/rm519)!
