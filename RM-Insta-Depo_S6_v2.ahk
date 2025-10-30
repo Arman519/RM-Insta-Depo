@@ -11,73 +11,259 @@ SetKeyDelay -1
 SetMouseDelay -1
 SetBatchLines -1
 
+; ============================================================================
+; MODERN UI DESIGN SYSTEM
+; ============================================================================
+
+; Color Palette - Material Design Inspired
+global UI_COLORS := { "background_primary": "1E1E2E"      ; Deep dark blue-grey
+                     , "background_secondary": "2A2A3E"    ; Slightly lighter
+                     , "background_tertiary": "363650"     ; Lightest background
+                     , "surface": "242438"                 ; Card/surface color
+                     , "surface_elevated": "2D2D44"        ; Elevated surfaces
+                     , "accent_primary": "7AA2F7"          ; Vibrant blue
+                     , "accent_secondary": "BB9AF7"        ; Purple accent
+                     , "accent_success": "9ECE6A"          ; Green for success
+                     , "accent_warning": "E0AF68"          ; Orange/yellow for warnings
+                     , "accent_error": "F7768E"            ; Red for errors
+                     , "text_primary": "C0CAF5"            ; Main text color
+                     , "text_secondary": "9AA5CE"          ; Secondary text
+                     , "text_tertiary": "565F89"           ; Disabled/tertiary text
+                     , "border": "414868"                  ; Border color
+                     , "highlight": "33467C" }             ; Highlight/selection
+
+; Typography Scale
+global UI_FONTS := { "title": "s16 bold"
+                    , "heading": "s12 bold"
+                    , "body": "s10 norm"
+                    , "small": "s9 norm"
+                    , "tiny": "s8 norm"
+                    , "mono": "s9 norm" }
+
+global UI_FONT_FAMILY := { "primary": "Segoe UI"
+                          , "mono": "Consolas"
+                          , "display": "Segoe UI Semibold" }
+
+; Spacing Scale (8px base unit)
+global UI_SPACING := { "xs": 4
+                      , "sm": 8
+                      , "md": 12
+                      , "lg": 16
+                      , "xl": 24
+                      , "xxl": 32 }
+
+; Border Radius
+global UI_RADIUS := { "sm": 4
+                     , "md": 8
+                     , "lg": 12
+                     , "xl": 16
+                     , "full": 25 }
+
+; DPI Awareness
+global DPI_SCALE := GetDPIScale()
+global DPI_AWARE := (DPI_SCALE > 1.0) ? true : false
+
+; Window Dimensions (responsive based on DPI)
+global MAIN_WIDTH := ScaleDPI(180)
+global MAIN_HEIGHT := ScaleDPI(220)
+global RES_DIALOG_WIDTH := ScaleDPI(300)
+global RES_DIALOG_HEIGHT := ScaleDPI(200)
+global RECIPE_DIALOG_WIDTH := ScaleDPI(380)
+global RECIPE_DIALOG_HEIGHT := ScaleDPI(380)
+
 ; Global variables
 global isGameActive := false
 global autoClickEnabled := false  ; Track auto-clicker state
 global currentResolution := "3840x2160"  ; Default resolution
 
-; Modern UI Configuration with rounded corners
+; ============================================================================
+; DPI HELPER FUNCTIONS
+; ============================================================================
+
+GetDPIScale() {
+    ; Get system DPI scaling factor
+    hDC := DllCall("GetDC", "UInt", 0, "UPtr")
+    dpi := DllCall("GetDeviceCaps", "UInt", hDC, "Int", 88) ; LOGPIXELSX
+    DllCall("ReleaseDC", "UInt", 0, "UInt", hDC)
+    return dpi / 96.0  ; 96 DPI is 100% scaling
+}
+
+ScaleDPI(value) {
+    ; Scale a value based on DPI
+    global DPI_SCALE
+    return Round(value * DPI_SCALE)
+}
+
+GetColor(colorName) {
+    ; Get color from palette
+    global UI_COLORS
+    return UI_COLORS[colorName]
+}
+
+; ============================================================================
+; MAIN GUI WINDOW - Modern Design
+; ============================================================================
+
+; Create main window with modern styling
 Gui, +AlwaysOnTop +ToolWindow -Caption +HwndGuiHwnd
-Gui, Color, 333333 ; Dark grey background
-Gui, Font, s14 bold, Segoe UI ; Increased font size for title
+Gui, Color, % GetColor("background_primary")
+Gui, Margin, % UI_SPACING.md, % UI_SPACING.md
 
-; Add a draggable bar at the top
-Gui, Add, Text, x0 y0 w400 h50 vDragBar BackgroundTrans, ; Draggable area
+; Title bar - with gradient effect
+titleBarHeight := ScaleDPI(32)
+Gui, Font, % UI_FONTS.title " c" GetColor("text_primary"), % UI_FONT_FAMILY.display
+Gui, Add, Text, x0 y0 w%MAIN_WIDTH% h%titleBarHeight% vDragBar BackgroundTrans
+Gui, Add, Text, x%UI_SPACING.md% y%UI_SPACING.sm% w%MAIN_WIDTH% h%titleBarHeight% c%UI_COLORS.text_primary% BackgroundTrans, RM Insta Depo
 
-; Add title text - positioned at the top
-Gui, Add, Text, x15 y0 w400 h50 cWhite BackgroundTrans, RM Insta Depo
+; Separator line for visual hierarchy
+separatorY := titleBarHeight + UI_SPACING.xs
+Gui, Add, Progress, x0 y%separatorY% w%MAIN_WIDTH% h2 c%UI_COLORS.accent_primary% Background%UI_COLORS.border%
 
-; Add a digital clock at the bottom middle - 12-HOUR FORMAT
-Gui, Font, s9 norm, Consolas  ; Monospace font works well for clocks
+; Hotkey labels with better spacing and colors
+startY := titleBarHeight + UI_SPACING.lg
+spacing := ScaleDPI(18)
+labelWidth := ScaleDPI(150)
 
-; Show with reduced width
-Gui, Show, w400 h400, RM Insta Depo
+Gui, Font, % UI_FONTS.body " c" GetColor("text_primary"), % UI_FONT_FAMILY.primary
+currentY := startY
 
-; Create rounded corners
-WinSet, Region, 0-0 w400 h400 r25-25, ahk_id %GuiHwnd%
+; F1 - Depo (with accent color)
+Gui, Add, Text, x%UI_SPACING.md% y%currentY% w%labelWidth% h%spacing% c%UI_COLORS.accent_primary% BackgroundTrans, ▸ F1: Depo
+currentY += spacing
 
-; Add transparency to the window
-WinSet, Transparent, 200, ahk_id %GuiHwnd%
+; F2 - Loot Output
+Gui, Add, Text, x%UI_SPACING.md% y%currentY% w%labelWidth% h%spacing% c%UI_COLORS.text_primary% BackgroundTrans, ▸ F2: Loot Output
+currentY += spacing
 
-; Replace buttons with static text
-Gui, Add, Text, x10 y30 w130 h22 cWhite BackgroundTrans, F1: Depo
-Gui, Add, Text, x10 y50 w130 h22 cWhite BackgroundTrans, F2: Loot Output
-Gui, Add, Text, x10 y70 w130 h22 cWhite BackgroundTrans, F3: Loot Input
-Gui, Add, Text, x10 y90 w130 h22 cWhite BackgroundTrans, F4: Recipe Search
-Gui, Add, Text, x10 y110 w130 h22 cWhite BackgroundTrans, F5: Select Res
-Gui, Add, Text, x10 y130 w130 h22 cWhite BackgroundTrans, F6: Auto Click (OFF)
-Gui, Add, Text, x10 y150 w200 h25 cWhite BackgroundTrans, F8: Show/Hide GUI
+; F3 - Loot Input
+Gui, Add, Text, x%UI_SPACING.md% y%currentY% w%labelWidth% h%spacing% c%UI_COLORS.text_primary% BackgroundTrans, ▸ F3: Loot Input
+currentY += spacing
 
-; Add digital clock at the top right - 12-HOUR FORMAT
-Gui, Font, s8 norm, Consolas  ; Smaller monospace font for clock
-Gui, Add, Text, x0 y175 w100 h25 Right vDigitalClock cWhite BackgroundTrans, 00:00:00 AM
+; F4 - Recipe Search
+Gui, Add, Text, x%UI_SPACING.md% y%currentY% w%labelWidth% h%spacing% c%UI_COLORS.text_secondary% BackgroundTrans, ▸ F4: Recipe Search
+currentY += spacing
 
-; Show with reduced width
-Gui, Show, w160 h200, RM Insta Depo
+; F5 - Select Resolution
+Gui, Add, Text, x%UI_SPACING.md% y%currentY% w%labelWidth% h%spacing% c%UI_COLORS.text_secondary% BackgroundTrans, ▸ F5: Select Res
+currentY += spacing
 
-; Create resolution selector GUI
+; F6 - Auto Click with status indicator
+Gui, Add, Text, x%UI_SPACING.md% y%currentY% w%labelWidth% h%spacing% c%UI_COLORS.text_secondary% BackgroundTrans vAutoClickLabel, ▸ F6: Auto Click (OFF)
+currentY += spacing
+
+; F8 - Show/Hide GUI
+Gui, Add, Text, x%UI_SPACING.md% y%currentY% w%labelWidth% h%spacing% c%UI_COLORS.text_tertiary% BackgroundTrans, ▸ F8: Show/Hide GUI
+currentY += spacing
+
+; Digital clock with modern styling
+clockY := MAIN_HEIGHT - ScaleDPI(30)
+Gui, Font, % UI_FONTS.small " c" GetColor("accent_secondary"), % UI_FONT_FAMILY.mono
+Gui, Add, Text, x%UI_SPACING.sm% y%clockY% w%MAIN_WIDTH% h%spacing% Right vDigitalClock c%UI_COLORS.accent_secondary% BackgroundTrans, 00:00:00 AM
+
+; Show window with modern dimensions
+Gui, Show, w%MAIN_WIDTH% h%MAIN_HEIGHT%, RM Insta Depo
+
+; Apply rounded corners with modern radius
+cornerRadius := UI_RADIUS.xl
+WinSet, Region, 0-0 w%MAIN_WIDTH% h%MAIN_HEIGHT% r%cornerRadius%-%cornerRadius%, ahk_id %GuiHwnd%
+
+; Subtle transparency for modern glass effect
+WinSet, Transparent, 240, ahk_id %GuiHwnd%
+
+; ============================================================================
+; RESOLUTION SELECTOR DIALOG - Modern Design
+; ============================================================================
+
 Gui, 3:+ToolWindow +AlwaysOnTop +Owner1
-Gui, 3:Color, 333333
-Gui, 3:Font, s10 cWhite, Segoe UI
-Gui, 3:Add, Text, x10 y10 w250 h20, Select your screen resolution:
-Gui, 3:Add, Radio, x20 y40 w200 h20 vRes4K Checked, 3840 x 2160 (4K)
-Gui, 3:Add, Radio, x20 y70 w200 h20 vResQHD, 2560 x 1440 (QHD) 
-Gui, 3:Add, Radio, x20 y100 w200 h20 vResFHD, 1920 x 1080 (FHD)
-Gui, 3:Add, Button, x60 y130 w80 h30 gApplyResolution, Apply
-Gui, 3:Add, Button, x150 y130 w80 h30 g3GuiClose, Cancel
+Gui, 3:Color, % GetColor("background_secondary")
+Gui, 3:Margin, % UI_SPACING.lg, % UI_SPACING.lg
 
-; Create recipe search GUI
+; Dialog title
+Gui, 3:Font, % UI_FONTS.heading " c" GetColor("text_primary"), % UI_FONT_FAMILY.primary
+Gui, 3:Add, Text, x%UI_SPACING.lg% y%UI_SPACING.lg% w%RES_DIALOG_WIDTH% h%UI_SPACING.xl% c%UI_COLORS.text_primary% BackgroundTrans, Screen Resolution
+
+; Subtitle with helper text
+titleY := UI_SPACING.lg + UI_SPACING.xl
+Gui, 3:Font, % UI_FONTS.small " c" GetColor("text_secondary"), % UI_FONT_FAMILY.primary
+Gui, 3:Add, Text, x%UI_SPACING.lg% y%titleY% w%RES_DIALOG_WIDTH% h%UI_SPACING.md% c%UI_COLORS.text_secondary% BackgroundTrans, Choose the resolution that matches your display
+
+; Radio buttons with improved spacing
+radioStartY := titleY + UI_SPACING.xl
+radioSpacing := ScaleDPI(32)
+radioWidth := ScaleDPI(220)
+
+Gui, 3:Font, % UI_FONTS.body " c" GetColor("text_primary"), % UI_FONT_FAMILY.primary
+radio1Y := radioStartY
+Gui, 3:Add, Radio, x%UI_SPACING.xl% y%radio1Y% w%radioWidth% h%UI_SPACING.lg% vRes4K Checked c%UI_COLORS.text_primary%, 🖥️  3840 x 2160 (4K UHD)
+
+radio2Y := radio1Y + radioSpacing
+Gui, 3:Add, Radio, x%UI_SPACING.xl% y%radio2Y% w%radioWidth% h%UI_SPACING.lg% vResQHD c%UI_COLORS.text_primary%, 🖥️  2560 x 1440 (QHD)
+
+radio3Y := radio2Y + radioSpacing
+Gui, 3:Add, Radio, x%UI_SPACING.xl% y%radio3Y% w%radioWidth% h%UI_SPACING.lg% vResFHD c%UI_COLORS.text_primary%, 🖥️  1920 x 1080 (Full HD)
+
+; Modern buttons with better styling
+buttonY := radio3Y + UI_SPACING.xxl
+buttonWidth := ScaleDPI(90)
+buttonHeight := ScaleDPI(32)
+buttonSpacing := UI_SPACING.md
+
+; Calculate button positions for center alignment
+totalButtonWidth := (buttonWidth * 2) + buttonSpacing
+buttonStartX := (RES_DIALOG_WIDTH - totalButtonWidth) / 2
+
+Gui, 3:Add, Button, x%buttonStartX% y%buttonY% w%buttonWidth% h%buttonHeight% gApplyResolution, Apply
+cancelButtonX := buttonStartX + buttonWidth + buttonSpacing
+Gui, 3:Add, Button, x%cancelButtonX% y%buttonY% w%buttonWidth% h%buttonHeight% g3GuiClose, Cancel
+
+; ============================================================================
+; RECIPE SEARCH DIALOG - Modern Design
+; ============================================================================
+
 Gui, 4:+ToolWindow +AlwaysOnTop +Owner1
-Gui, 4:Color, 333333
-Gui, 4:Font, s10 cWhite, Segoe UI
-Gui, 4:Add, Text, x10 y10 w300 h20, Search for crafting recipes:
-Gui, 4:Font, s10 cBlack, Segoe UI  ; Change font color to black for edit control
-Gui, 4:Add, Edit, x10 y35 w220 h25 vSearchTerm gSearchOnEnter +WantReturn
-GuiControl, Focus, SearchTerm  ; Set focus to the Search bar by default
-Gui, 4:Font, s10 cWhite, Segoe UI  ; Change back to white for other controls
-Gui, 4:Add, Button, x240 y35 w80 h25 gPerformSearch, Search
-Gui, 4:Add, Edit, x10 y70 w310 h200 vSearchResults ReadOnly +Wrap, Type a recipe name above and click Search...
-Gui, 4:Add, Button, x240 y280 w80 h30 g4GuiClose, Close
+Gui, 4:Color, % GetColor("background_secondary")
+Gui, 4:Margin, % UI_SPACING.lg, % UI_SPACING.lg
+
+; Dialog title
+Gui, 4:Font, % UI_FONTS.heading " c" GetColor("text_primary"), % UI_FONT_FAMILY.primary
+Gui, 4:Add, Text, x%UI_SPACING.lg% y%UI_SPACING.lg% w%RECIPE_DIALOG_WIDTH% h%UI_SPACING.xl% c%UI_COLORS.text_primary% BackgroundTrans, 🔍 Recipe Search
+
+; Subtitle
+searchTitleY := UI_SPACING.lg + UI_SPACING.xl
+Gui, 4:Font, % UI_FONTS.small " c" GetColor("text_secondary"), % UI_FONT_FAMILY.primary
+Gui, 4:Add, Text, x%UI_SPACING.lg% y%searchTitleY% w%RECIPE_DIALOG_WIDTH% h%UI_SPACING.md% c%UI_COLORS.text_secondary% BackgroundTrans, Find crafting materials and recipes
+
+; Search input with modern styling
+searchBarY := searchTitleY + UI_SPACING.xl
+searchBarWidth := RECIPE_DIALOG_WIDTH - (UI_SPACING.lg * 2) - ScaleDPI(90)
+searchBarHeight := ScaleDPI(28)
+
+Gui, 4:Font, % UI_FONTS.body " cBlack", % UI_FONT_FAMILY.primary
+Gui, 4:Add, Edit, x%UI_SPACING.lg% y%searchBarY% w%searchBarWidth% h%searchBarHeight% vSearchTerm gSearchOnEnter +WantReturn
+GuiControl, Focus, SearchTerm
+
+; Search button
+searchButtonX := UI_SPACING.lg + searchBarWidth + UI_SPACING.sm
+searchButtonWidth := ScaleDPI(80)
+Gui, 4:Font, % UI_FONTS.body " c" GetColor("text_primary"), % UI_FONT_FAMILY.primary
+Gui, 4:Add, Button, x%searchButtonX% y%searchBarY% w%searchButtonWidth% h%searchBarHeight% gPerformSearch, Search
+
+; Results area with modern styling
+resultsY := searchBarY + searchBarHeight + UI_SPACING.lg
+resultsWidth := RECIPE_DIALOG_WIDTH - (UI_SPACING.lg * 2)
+resultsHeight := ScaleDPI(220)
+
+Gui, 4:Font, % UI_FONTS.small " cBlack", % UI_FONT_FAMILY.mono
+Gui, 4:Add, Edit, x%UI_SPACING.lg% y%resultsY% w%resultsWidth% h%resultsHeight% vSearchResults ReadOnly +Wrap, 💡 Type a recipe name above and click Search...`n`nTip: Search is case-insensitive
+
+; Close button at bottom
+closeButtonY := resultsY + resultsHeight + UI_SPACING.lg
+closeButtonWidth := ScaleDPI(100)
+closeButtonHeight := ScaleDPI(32)
+closeButtonX := (RECIPE_DIALOG_WIDTH - closeButtonWidth) / 2
+
+Gui, 4:Font, % UI_FONTS.body " c" GetColor("text_primary"), % UI_FONT_FAMILY.primary
+Gui, 4:Add, Button, x%closeButtonX% y%closeButtonY% w%closeButtonWidth% h%closeButtonHeight% g4GuiClose, Close
 
 ; Set up a timer to update the clock every second
 SetTimer, UpdateClock, 1000
@@ -1444,26 +1630,30 @@ recipes["Wyndanblade Quarterstaff"] := "10 Lightwood, 6 Nomad Cloth, 3 Iron Ingo
 
 ; Auto-click toggle function
 ToggleAutoClick:
-    global autoClickEnabled
-    
+    global autoClickEnabled, UI_COLORS
+
     ; Toggle the state
     autoClickEnabled := !autoClickEnabled
-    
+
     if (autoClickEnabled) {
         ; Enable auto-clicking
         SetTimer, PerformAutoClick, 500  ; 0.5 seconds
-        GuiControl,, Button4, F6: Auto Click (ON)
-        
-        ; Show tooltip to confirm activation
-        ToolTip, Auto-clicking enabled, 0, 0
+        GuiControl,, AutoClickLabel, ▸ F6: Auto Click (ON)
+        ; Update color to success green
+        GuiControl, +c%UI_COLORS.accent_success%, AutoClickLabel
+
+        ; Show modern tooltip to confirm activation
+        ToolTip, ✓ Auto-clicking enabled, 0, 0
         SetTimer, RemoveToolTip, 1500
     } else {
         ; Disable auto-clicking
         SetTimer, PerformAutoClick, Off
-        GuiControl,, Button4, F6: Auto Click (OFF)
-        
-        ; Show tooltip to confirm deactivation
-        ToolTip, Auto-clicking disabled, 0, 0
+        GuiControl,, AutoClickLabel, ▸ F6: Auto Click (OFF)
+        ; Update color back to secondary text
+        GuiControl, +c%UI_COLORS.text_secondary%, AutoClickLabel
+
+        ; Show modern tooltip to confirm deactivation
+        ToolTip, ✗ Auto-clicking disabled, 0, 0
         SetTimer, RemoveToolTip, 1500
     }
     return
@@ -1484,6 +1674,8 @@ return
 
 ; Show resolution selector
 OpenResSelector:
+    global RES_DIALOG_WIDTH, RES_DIALOG_HEIGHT
+
     ; Set the current resolution radio button
     if (currentResolution = "3840x2160")
         GuiControl, 3:, Res4K, 1
@@ -1491,9 +1683,9 @@ OpenResSelector:
         GuiControl, 3:, ResQHD, 1
     else if (currentResolution = "1920x1080")
         GuiControl, 3:, ResFHD, 1
-    
-    ; Show the dialog
-    Gui, 3:Show, w270 h170, Select Res
+
+    ; Show the dialog with modern dimensions
+    Gui, 3:Show, w%RES_DIALOG_WIDTH% h%RES_DIALOG_HEIGHT%, Screen Resolution
 Return
 
 F5::Gosub, OpenResSelector
@@ -1575,9 +1767,11 @@ Return
 
 ; Recipe search window
 OpenRecipeSearch:
-    ; Show the recipe search window
-    Gui, 4:Show, w330 h320, Recipe Search
-    
+    global RECIPE_DIALOG_WIDTH, RECIPE_DIALOG_HEIGHT
+
+    ; Show the recipe search window with modern dimensions
+    Gui, 4:Show, w%RECIPE_DIALOG_WIDTH% h%RECIPE_DIALOG_HEIGHT%, Recipe Search
+
     return
 
 SearchOnEnter:

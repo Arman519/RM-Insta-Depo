@@ -1,0 +1,251 @@
+================================================================================
+        RM-INSTA-DEPO UI ARCHITECTURE & COMPONENT STRUCTURE
+================================================================================
+
+APPLICATION LAYER STRUCTURE
+─────────────────────────────────────────────────────────────────────────────
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│                      RM-Insta-Depo Application                         │
+│                     (AutoHotkey v1 Single .exe)                        │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│  ┌──────────────────┐  ┌──────────────────┐  ┌──────────────────────┐ │
+│  │  UI/GUI Layer    │  │  Macro Logic     │  │  System Integration  │ │
+│  │  (AutoHotkey)    │  │  (Click/Hotkeys) │  │  (Windows API)       │ │
+│  │                  │  │                  │  │                      │ │
+│  │ • Main Window    │  │ • F1-F3 Macros   │  │ • Window Detection   │ │
+│  │ • Dialogs        │  │ • Coordinate     │  │ • Mouse Handling     │ │
+│  │ • Context Menu   │  │   Database       │  │ • Timer Events       │ │
+│  │ • Clock Display  │  │ • 1200+ Recipes  │  │ • Message Handling   │ │
+│  │ • Color Scheme   │  │                  │  │                      │ │
+│  └──────────────────┘  └──────────────────┘  └──────────────────────┘ │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
+
+
+WINDOW HIERARCHY
+─────────────────────────────────────────────────────────────────────────────
+
+Application
+│
+├─ Main Window (GUI 1)                           [400x160 pixels]
+│  ├─ Draggable Title Bar
+│  ├─ Hotkey Labels (F1-F8)
+│  ├─ Digital Clock
+│  └─ Context Menu (right-click)
+│     ├─ Pause/Resume Hotkeys
+│     ├─ Toggle Auto Click
+│     ├─ Recipe Search
+│     ├─ Change Resolution
+│     └─ Exit
+│
+├─ Resolution Selector Dialog (GUI 3)            [270x170 pixels]
+│  ├─ Instruction Text
+│  ├─ Radio Button Group
+│  │  ├─ 3840 x 2160 (4K) [DEFAULT]
+│  │  ├─ 2560 x 1440 (QHD)
+│  │  └─ 1920 x 1080 (FHD)
+│  ├─ Apply Button
+│  └─ Cancel Button
+│
+└─ Recipe Search Dialog (GUI 4)                  [330x320 pixels]
+   ├─ Instruction Text
+   ├─ Search Input Field
+   ├─ Search Button
+   ├─ Results Display (Read-only Text Area)
+   └─ Close Button
+
+
+MAIN WINDOW DETAILED LAYOUT
+─────────────────────────────────────────────────────────────────────────────
+
+╔════════════════════════════════════════════════════════════╗
+║                  RM Insta Depo                  [DRAGBAR] ║
+╟────────────────────────────────────────────────────────────╢
+║                                                            ║
+║  F1: Depo                                                  ║
+║  F2: Loot Output                                           ║
+║  F3: Loot Input                                            ║
+║  F4: Recipe Search                                         ║
+║  F5: Select Res                                            ║
+║  F6: Auto Click (OFF/ON)                                   ║
+║  F8: Show/Hide GUI                                         ║
+║                                       00:00:00 AM          ║
+║                                                            ║
+╚════════════════════════════════════════════════════════════╝
+
+Window Specifications:
+  ├─ Width: 400 pixels
+  ├─ Height: 160 pixels
+  ├─ Style: AlwaysOnTop, ToolWindow, no caption
+  ├─ Rounded Corners: 25px radius
+  ├─ Transparency: 78% opacity (200/255 alpha)
+  ├─ Background: #333333 (dark grey)
+  ├─ Text Color: #FFFFFF (white)
+  └─ Draggable: Yes
+
+
+COLOR & STYLING REFERENCE
+─────────────────────────────────────────────────────────────────────────────
+
+Primary Colors:
+  ├─ Background (Primary):    #333333  (RGB: 51, 51, 51)    Dark Grey
+  ├─ Text (Default):          #FFFFFF  (RGB: 255, 255, 255) White
+  ├─ Button Background:       #F0F0F0  (RGB: 240, 240, 240) Light Grey
+  ├─ Button Hover:            #D9A590  (RGB: 217, 165, 144) Muted Orange
+  └─ Input Text:              #000000  (RGB: 0, 0, 0)       Black
+
+Typography:
+  ├─ Title:                   14px | bold   | Segoe UI
+  ├─ Control Labels:          10px | normal | Segoe UI
+  ├─ Hotkey Labels:           9px  | normal | Segoe UI
+  ├─ Digital Clock:           8px  | normal | Consolas (monospace)
+  └─ Input Fields:            10px | normal | Segoe UI
+
+Visual Effects:
+  ├─ Rounded Corners:         25px radius (main window)
+  ├─ Window Transparency:     200/255 (78% opaque)
+  ├─ Shadows:                 None
+  ├─ Gradients:               None
+  ├─ Animations:              None
+  ├─ Hover Transitions:       Instant color change
+  ├─ Tooltips:                1500ms duration, positioned at (0, 0)
+  └─ Background Transparency: BackgroundTrans (text controls)
+
+
+EVENT FLOW & INTERACTIONS
+─────────────────────────────────────────────────────────────────────────────
+
+User Interaction                Handler Function              Action
+─────────────────────────────────────────────────────────────────────────────
+Press F1                    →  F1::Macro1                  Execute macro
+Press F2                    →  F2::Macro2                  Execute macro
+Press F3                    →  F3::Macro3                  Execute macro
+Press F4                    →  OpenRecipeSearch             Show Recipe GUI
+Press F5                    →  OpenResSelector              Show Resolution GUI
+Press F6                    →  ToggleAutoClick              Toggle auto-click
+Press F8                    →  GuiClose Event              Toggle main window
+
+Right-click Window          →  ShowContextMenu              Display context menu
+Left-click (drag title)     →  StartDrag                    Enable drag mode
+Mouse Move (hover)          →  HandleMouseMove              Change button colors
+
+Resolution Selection        →  ApplyResolution              Update coordinate set
+Recipe Search               →  PerformSearch                Query recipe DB
+Auto-click Toggle           →  PerformAutoClick (timer)     Execute clicks
+
+Clock Update (every 1s)     →  UpdateClock (timer)          Display current time
+Game Detection (every 1s)   →  CheckGameActive              Toggle transparency
+
+
+DATA STRUCTURES
+─────────────────────────────────────────────────────────────────────────────
+
+Global Variables:
+  ├─ isGameActive: boolean       (Is Last Oasis window active?)
+  ├─ autoClickEnabled: boolean   (Is auto-clicker toggled on?)
+  ├─ currentResolution: string   ("3840x2160", "2560x1440", "1920x1080")
+  ├─ hoveredControl: string      (Which control is being hovered?)
+  ├─ MenuState: string           ("Pause" or "Resume")
+  └─ recipes: associative array  (Recipe name → Ingredients mapping)
+
+Sample Recipe Data:
+  recipes["Aloe Gel"] := "5 Aloe Vera"
+  recipes["Aloe Goo Bomb"] := "6 Aloe Gel, 6 Cotton, 2 Rope"
+  ... [1200+ entries] ...
+
+
+CURRENT UI STATE INDICATORS
+─────────────────────────────────────────────────────────────────────────────
+
+Visual Indicators:
+  ├─ Auto Click Button:       Shows "(ON)" or "(OFF)" in label
+  ├─ Window Opacity:          78% always (no fade on inactive)
+  ├─ Hovered Buttons:         Color changes to #D9A590
+  ├─ Context Menu:            Checkmarks show Pause/Resume state
+  └─ Tooltips:                Temporary messages for confirmations
+
+Status Information:
+  ├─ Digital Clock:           Updates every 1000ms
+  ├─ Game Detection:          Silent (no visual indicator)
+  ├─ Macro Execution:         No visual feedback shown
+  └─ Search Results:          Displayed in read-only text area
+
+
+LIMITATIONS & TECHNICAL ISSUES
+─────────────────────────────────────────────────────────────────────────────
+
+Architecture Issues:
+  ├─ UI & macro logic mixed in same file
+  ├─ No separation of concerns
+  ├─ Hardcoded pixel coordinates for all UI elements
+  ├─ Coordinate database for macros: 100+ click positions per resolution
+  └─ No configuration file system
+
+Styling Issues:
+  ├─ Only 5 colors in entire application
+  ├─ No visual hierarchy or depth
+  ├─ Inconsistent spacing (10-30px, no guidelines)
+  ├─ No differentiation between interactive & static elements
+  ├─ Poor contrast in some areas
+  └─ No hover/focus states for text controls
+
+Usability Issues:
+  ├─ Fixed window size (not resizable)
+  ├─ Small UI feels cramped
+  ├─ No tooltips explaining hotkeys
+  ├─ Recipe search has no filtering/categories
+  ├─ No recent items or favorites
+  └─ Help documentation missing from UI
+
+Performance Issues:
+  ├─ Mouse movement detection: constant polling
+  ├─ No idle optimization
+  ├─ Clock updates even when window is hidden
+  ├─ All timers run at fixed intervals regardless of state
+  └─ No resource cleanup on exit
+
+
+FRAMEWORK CAPABILITIES & LIMITATIONS
+─────────────────────────────────────────────────────────────────────────────
+
+AutoHotkey v1 Capabilities:
+  ✓ Basic windows with hardcoded sizes
+  ✓ Simple controls (Text, Button, Radio, Edit)
+  ✓ Color & font customization
+  ✓ Basic transparency (WinSet)
+  ✓ Context menus
+  ✓ Event handling (hotkeys, messages)
+  ✓ Timer system
+  ✓ Window manipulation (move, hide, show)
+
+AutoHotkey v1 Limitations:
+  ✗ No built-in animations
+  ✗ No gradients or advanced graphics
+  ✗ No responsive layout system
+  ✗ Limited control styling options
+  ✗ No CSS-like theming
+  ✗ No component library
+  ✗ No DPI awareness
+  ✗ No built-in data binding
+  ✗ Limited accessibility features
+
+
+MODERNIZATION IMPACT MATRIX
+─────────────────────────────────────────────────────────────────────────────
+
+Aspect                  Current State           Modernization Benefit
+─────────────────────────────────────────────────────────────────────────────
+Code Organization       Monolithic (2KB+ lines) Modular components (+Reuse)
+Visual Design           Minimalist (5 colors)   Professional (10+ colors)
+Responsiveness          Fixed sizes             Adaptive to DPI
+Performance             Basic (polling loops)   Optimized (event-driven)
+Maintainability         Hard (magic numbers)    Easy (configuration-driven)
+Extensibility           Limited (AHK v1)        Unlimited (modern frameworks)
+User Experience         Functional              Delightful
+Accessibility           Poor                    Compliant (WCAG)
+Cross-Platform          Windows only            Multi-platform possible
+Developer Experience    Limited IDE support     Full IDE support
+
+================================================================================
