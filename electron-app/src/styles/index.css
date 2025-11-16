@@ -1,0 +1,94 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-ui-border;
+  }
+
+  body {
+    @apply bg-transparent text-text-primary font-sans antialiased;
+    margin: 0;
+    padding: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  #root {
+    @apply w-full h-screen;
+  }
+}
+
+@layer components {
+  /* Glass morphism effect */
+  .glass {
+    @apply bg-primary-surface/80 backdrop-blur-md;
+  }
+
+  .glass-elevated {
+    @apply bg-primary-elevated/90 backdrop-blur-lg;
+  }
+
+  /* Custom scrollbar */
+  .custom-scrollbar::-webkit-scrollbar {
+    @apply w-2;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    @apply bg-primary-bg rounded;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-ui-border rounded hover:bg-ui-highlight;
+  }
+
+  /* Button styles */
+  .btn-primary {
+    @apply px-4 py-2 bg-accent-primary text-white rounded-lg font-medium
+           hover:bg-accent-primary/90 transition-colors duration-200
+           active:scale-95 transform;
+  }
+
+  .btn-secondary {
+    @apply px-4 py-2 bg-primary-tertiary text-text-primary rounded-lg font-medium
+           hover:bg-primary-tertiary/80 transition-colors duration-200
+           active:scale-95 transform;
+  }
+
+  .btn-success {
+    @apply px-4 py-2 bg-accent-success text-primary-bg rounded-lg font-medium
+           hover:bg-accent-success/90 transition-colors duration-200
+           active:scale-95 transform;
+  }
+
+  /* Input styles */
+  .input {
+    @apply px-3 py-2 bg-primary-tertiary text-text-primary rounded-lg
+           border border-ui-border focus:border-accent-primary
+           focus:ring-2 focus:ring-accent-primary/20 outline-none
+           transition-all duration-200;
+  }
+
+  /* Card styles */
+  .card {
+    @apply glass rounded-2xl p-6 shadow-2xl border border-ui-border/50;
+  }
+}
+
+@layer utilities {
+  /* Gradient text */
+  .gradient-text {
+    @apply bg-gradient-to-r from-accent-primary to-accent-secondary
+           bg-clip-text text-transparent;
+  }
+
+  /* Draggable area */
+  .draggable {
+    -webkit-app-region: drag;
+  }
+
+  .non-draggable {
+    -webkit-app-region: no-drag;
+  }
+}
